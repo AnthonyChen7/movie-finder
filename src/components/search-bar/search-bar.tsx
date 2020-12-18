@@ -54,11 +54,12 @@ export default function SearchBar(props: SearchProps) {
   return (
     <>
       <Input
-        icon={
+        action={
           <Button
             icon='search'
             disabled={isDisabled}
             onClick={onSearchClicked}
+            circular
           >
           </Button>
         }
