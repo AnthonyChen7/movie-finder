@@ -6,9 +6,10 @@ import SearchBar from './components/search-bar/search-bar';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-      <SearchBar />
-      </header>
+      <SearchBar
+        disabled={false}
+        searchPressed={(searchVal) => { console.log(searchVal) }}
+      />
     </div>
   );
 }
