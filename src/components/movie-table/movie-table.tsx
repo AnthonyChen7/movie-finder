@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, useEffect, ReactNode } from 'react';
 import './movie-table.scss';
 
-import { Table, Pagination, Message, Image } from 'semantic-ui-react';
+import { Table, Pagination, Message, Image, Popup } from 'semantic-ui-react';
 import { useDebouncedCallback } from 'use-debounce';
 
 import 'semantic-ui-css/semantic.min.css';
@@ -43,9 +43,20 @@ export default function MovieTable(props: MovieTableProps) {
         {
           isValidMovies && movies.map(movie => {
             return  (
+              // try https://github.com/littlebits/react-popover
               <Table.Row key={movie.name}>
                 <Table.Cell >
-                  <Image centered src={movie.posterUrl} size='mini' />
+                  <Popup
+                    size="huge"
+                    wide="very"
+                    position="right center"
+                    hideOnScroll={false}
+                    trigger={
+                      <Image centered src={movie.posterUrl} size='mini' />
+                    }
+                  >
+                    <Image centered src={movie.posterUrl} size='massive' />
+                  </Popup>
                 </Table.Cell>
                 <Table.Cell>{movie.name}</Table.Cell>
                 <Table.Cell>{movie.releasedDate}</Table.Cell>
