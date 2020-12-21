@@ -8,7 +8,7 @@ import 'semantic-ui-css/semantic.min.css';
 import { Movie } from '../../models/movie';
 
 interface MovieTableProps {
-  movies?: Movie[];
+  movies: Movie[];
 }
 
 const COLUMN_NAMES = [
@@ -20,9 +20,14 @@ const COLUMN_NAMES = [
 export default function MovieTable(props: MovieTableProps) {
   const { movies } = props;
 
+  const [isValidMovies, setIsValidMovies] = useState(false);
+
+  useEffect(() => {
+    setIsValidMovies(movies !== undefined && movies !== null && movies.length > 0);
+  }, [movies]);
+
   return (
     <Table celled striped>
-
       <Table.Header>
         {
           COLUMN_NAMES.map(columnName => {
@@ -36,7 +41,7 @@ export default function MovieTable(props: MovieTableProps) {
 
       <Table.Body>
         {
-          movies && movies.length > 0 && movies.map(movie => {
+          isValidMovies && movies.map(movie => {
             return  (
               <Table.Row key={movie.name}>
                 <Table.Cell >
@@ -49,7 +54,7 @@ export default function MovieTable(props: MovieTableProps) {
           })
         }
         {
-          (!movies || movies.length === 0) && (
+          (!isValidMovies) && (
             <Table.Row>
               <Table.HeaderCell colSpan={COLUMN_NAMES.length} textAlign="center">
                 <Message size="massive">No results to display</Message>
@@ -59,7 +64,7 @@ export default function MovieTable(props: MovieTableProps) {
         }
       </Table.Body>
 
-      {movies && movies.length > 0 && 
+      {isValidMovies && 
         <Table.Footer>
           <Table.Row>
             <Table.HeaderCell colSpan={COLUMN_NAMES.length}>
