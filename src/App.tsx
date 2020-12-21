@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 
 import SearchBar from './components/search-bar/search-bar';
+import MovieTable from './components/movie-table/movie-table';
 import { Movie } from './models/movie';
 
 const API_KEY = 'http://www.omdbapi.com/?i=tt3896198&apikey=aeb03ac3';
@@ -13,7 +14,6 @@ function App() {
     const json = await response.json();
     const parsedJson = parseJson(json);
     setMovies(parsedJson);
-    console.log(json);
   };
 
   const parseJson = (json: any) => {
@@ -23,7 +23,8 @@ function App() {
       for (const searchResult of searchResults) {
         const movie: Movie = {
           name: searchResult.Title,
-          releasedDate: searchResult.Year
+          releasedDate: searchResult.Year,
+          posterUrl: searchResult.Poster
         };
         result.push(movie);
       }
@@ -36,7 +37,11 @@ function App() {
         disabled={false}
         searchPressed={onSearchPressed}
       />
-      {JSON.stringify(movies)}
+
+      <MovieTable
+        movies={movies}
+      />
+      
     </div>
   );
 }
