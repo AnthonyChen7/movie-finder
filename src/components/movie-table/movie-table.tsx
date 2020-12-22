@@ -1,11 +1,12 @@
-import { useState, ChangeEvent, useEffect, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import './movie-table.scss';
 
-import { Table, Pagination, Message, Image, Popup } from 'semantic-ui-react';
-import { useDebouncedCallback } from 'use-debounce';
+import { Table, Pagination, Message, Image } from 'semantic-ui-react';
 
 import 'semantic-ui-css/semantic.min.css';
+import 'antd/dist/antd.css'
 import { Movie } from '../../models/movie';
+import { Popover } from 'antd';
 
 interface MovieTableProps {
   movies: Movie[];
@@ -43,20 +44,14 @@ export default function MovieTable(props: MovieTableProps) {
         {
           isValidMovies && movies.map(movie => {
             return  (
-              // try https://github.com/littlebits/react-popover
+              // don't use semantic ui react popover as it doesn't get displayed properly
               <Table.Row key={movie.name}>
                 <Table.Cell >
-                  <Popup
-                    size="huge"
-                    wide="very"
-                    position="right center"
-                    hideOnScroll={false}
-                    trigger={
-                      <Image centered src={movie.posterUrl} size='mini' />
-                    }
-                  >
-                    <Image centered src={movie.posterUrl} size='massive' />
-                  </Popup>
+                <Popover content={
+                  <Image centered src={movie.posterUrl} size='large' />
+                }>
+                  <Image centered src={movie.posterUrl} size='mini' />
+                </Popover>
                 </Table.Cell>
                 <Table.Cell>{movie.name}</Table.Cell>
                 <Table.Cell>{movie.releasedDate}</Table.Cell>
