@@ -31,6 +31,10 @@ function App() {
     }
     return result;
   };
+
+  const onWatchLaterToggled = (shouldWatchLater: boolean, movieName: string) => {
+    console.log(shouldWatchLater, movieName);
+  };
   return (
     <div className="App">
       <SearchBar
@@ -40,6 +44,7 @@ function App() {
 
       <MovieTable
         movies={movies}
+        watchLaterToggled={onWatchLaterToggled}
       />
       
     </div>

@@ -4,4 +4,5 @@ export interface Movie {
   posterUrl: string;
   // in minutes
   // duration: string;
+  shouldWatchLater?: boolean;
 };
