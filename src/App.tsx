@@ -11,40 +11,34 @@ const API_KEY = 'http://www.omdbapi.com/?i=tt3896198&apikey=aeb03ac3';
 
 function App() {
   const [movies, setMovies] = useState([] as Movie[]);
-  const [moviesToWatchLater, setMoviesToWatchLater] = useState<{[key: string]: boolean}>({});
   const [movieNameToDbID, setMovieNameToDbID] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     watchLaterRef.on('value', (snapshot) => {
       const items = snapshot.val();
+      let newMovieNameToDbID: {[key: string]: string} = {};
       if (items) {
         const uniqueIds = Object.keys(items);
-        let newMoviesTowatchLater: {[key: string]: boolean} = {};
-        let newMovieNameToDbID: {[key: string]: string} = {};
         for (const uniqueId of uniqueIds) {
           const value = items[uniqueId];
-          newMoviesTowatchLater[value.name] = value.watchLater;
-          newMovieNameToDbID[value.name] = uniqueId;
+          newMovieNameToDbID[value] = uniqueId;
         }
-        setMoviesToWatchLater(newMoviesTowatchLater);
-        setMovieNameToDbID(newMovieNameToDbID);
       }
+      setMovieNameToDbID(newMovieNameToDbID);
     });
   }, []);
 
   useEffect(() => {
-    const result: Movie[] = [];
-
+   const result: Movie[] = [];
     for (const movie of movies) {
       const newMovie = {
         ...movie,
-        shouldWatchLater: moviesToWatchLater[movie.name]
+        shouldWatchLater: movieNameToDbID[movie.name] !== undefined
       };
       result.push(newMovie);
     }
-
-    setMovies(result);
-  }, [moviesToWatchLater]);
+   setMovies(result);
+  }, [movieNameToDbID]);
 
   const onSearchPressed = async (searchVal: string) => {
     const response = await fetch(`batman.json`);
@@ -62,7 +56,7 @@ function App() {
           name: searchResult.Title,
           releasedDate: searchResult.Year,
           posterUrl: searchResult.Poster,
-          shouldWatchLater: moviesToWatchLater[searchResult.Title]
+          shouldWatchLater: movieNameToDbID[searchResult.Title] !== undefined
         };
         result.push(movie);
       }
@@ -71,16 +65,11 @@ function App() {
   };
 
   const onWatchLaterToggled = (shouldWatchLater: boolean, movieName: string) => {
-    if (!movieNameToDbID[movieName]) {
-      watchLaterRef.push({
-        name: movieName,
-        watchLater: shouldWatchLater
-      });
+    if (shouldWatchLater && !movieNameToDbID[movieName]) {
+      watchLaterRef.push(movieName);
     } else {
-      watchLaterRef.child(movieNameToDbID[movieName]).set({name: movieName,
-        watchLater: shouldWatchLater})
+      watchLaterRef.child(movieNameToDbID[movieName]).remove();
     } 
-    
   };
   return (
     <div className="App">
